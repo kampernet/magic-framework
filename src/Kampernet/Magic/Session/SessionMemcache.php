@@ -5,7 +5,8 @@ use Kampernet\Magic\Base\Session\SessionInterface;
 use Kampernet\Magic\Base\Environment;
 
 /**
- * use the memcache session handler
+ * use the memcache session handler.
+ * TODO remove and replace with Symfony session classes
  *
  * @package Kampernet\Magic\Session
  */
