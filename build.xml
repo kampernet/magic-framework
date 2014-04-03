@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project default="test" name="dealsix">
+
+    <target name="docs">
+        <delete dir="docs" failonerror="true" quiet="true"/>
+        <exec executable="phpdoc">
+            <arg value="-d" />
+            <arg value="src" />
+            <arg value="-t" />
+            <arg value="docs" />
+        </exec>
+    </target>
+</project>
