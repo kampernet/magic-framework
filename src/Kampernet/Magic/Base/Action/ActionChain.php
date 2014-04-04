@@ -2,7 +2,7 @@
 namespace Kampernet\Magic\Base\Action;
 
 use Iterator;
-use Kampernet\Magic\Base\AbstractRequest;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * a collection of actions
@@ -70,7 +70,7 @@ class ActionChain implements CommandInterface, Iterator {
 	 *
 	 * @see CommandInterface::execute()
 	 */
-	final public function execute(AbstractRequest &$request) {
+	final public function execute(Request &$request) {
 
 		/**
 		 * @var CommandInterface $command

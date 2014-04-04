@@ -2,9 +2,12 @@
 namespace Kampernet\Magic\Renderer;
 
 use Kampernet\Magic\Base\Renderer\RenderInterface;
-use Kampernet\Magic\Base\Response;
+use Kampernet\Magic\Base\ResponseContent;
 use DOMDocument, XSLTProcessor;
-use Kampernet\Magic\Base\Environment;
+use Kampernet\Magic\Base\Configuration;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 /**
  * works with the XML renderer and uses an XSL template
@@ -20,8 +23,12 @@ class XSLTRenderer implements RenderInterface {
 	 */
 	public function sendHeaders(Response $response) {
 
-		header("Cache-Control: no-cache, must-revalidate");
-		header("Expires: Sat, 26 Jul 1997 05:00:00 GMT");
+		$response->headers = new ResponseHeaderBag([
+			"Cache-Control" => "no-cache, must-revalidate",
+			"Expires" => "Sat, 26 Jul 1997 05:00:00 GMT"
+		]);
+
+		$response->sendHeaders();
 	}
 
 	/**
@@ -29,22 +36,23 @@ class XSLTRenderer implements RenderInterface {
 	 *
 	 * @see RenderInterface::render()
 	 */
-	public function render(Response $response) {
+	public function render(Request $request, Response $response, ResponseContent $content) {
 
 		$renderer = new XMLRenderer();
-		$xml = $renderer->to_domdocument($response);
+		$xml = $renderer->to_domdocument($content);
 
 		$xsl = new DOMDocument;
 
-		$templates = Environment::getInstance()->templates;
-		$path = realpath(dirname(__FILE__) . "/$templates");
+		$path = Configuration::getInstance()->templates;
 
-		$template = 'index';
+		$template = $request->getBasePath();
 		$xsl->load("$path/$template.xsl");
 
 		$proc = new XSLTProcessor;
 		$proc->importStyleSheet($xsl);
 
-		return $proc->transformToXML($xml);
+		$response->setContent($proc->transformToXML($xml));
+
+		return $response;
 	}
 }

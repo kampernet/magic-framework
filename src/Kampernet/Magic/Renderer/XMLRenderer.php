@@ -2,11 +2,14 @@
 namespace Kampernet\Magic\Renderer;
 
 use Kampernet\Magic\Base\Renderer\RenderInterface;
-use Kampernet\Magic\Base\Response;
+use Kampernet\Magic\Base\ResponseContent;
 use DOMNode;
 use DOMDocument;
 use Iterator;
 use Kampernet\Magic\Base\Model\Model;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 /**
  * XMLRenderer for getting the response as XML.
@@ -25,9 +28,13 @@ class XMLRenderer implements RenderInterface {
 	 */
 	public function sendHeaders(Response $response) {
 
-		header("Content-Type: text/xml");
-		header("Cache-Control: no-cache, must-revalidate");
-		header("Expires: Sat, 26 Jul 1997 05:00:00 GMT");
+		$response->headers = new ResponseHeaderBag([
+			"Content-Type" => "text/xml",
+			"Cache-Control" => "no-cache, must-revalidate",
+			"Expires" => "Sat, 26 Jul 1997 05:00:00 GMT"
+		]);
+
+		$response->sendHeaders();
 	}
 
 	/**
@@ -35,9 +42,11 @@ class XMLRenderer implements RenderInterface {
 	 *
 	 * @see RenderInterface::render()
 	 */
-	public function render(Response $response) {
+	public function render(Request $request, Response $response, ResponseContent $content) {
 
-		return $this->to_domdocument($response)->saveXML();
+		$response->setContent($this->to_domdocument($content)->saveXML());
+
+		return $response;
 	}
 
 	/**
@@ -45,10 +54,10 @@ class XMLRenderer implements RenderInterface {
 	 *
 	 * @param DOMNode $node
 	 * @param null $tag
-	 * @param Response $response
+	 * @param ResponseContent $response
 	 * @return void
 	 */
-	private function append_to(DOMNode $node, $tag = null, Response $response) {
+	private function append_to(DOMNode $node, $tag = null, ResponseContent $response) {
 
 		$doc = ($node instanceof DOMDocument) ? $node : $node->ownerDocument;
 		$tag = (is_null($tag)) ? "response" : $tag;
@@ -125,10 +134,10 @@ class XMLRenderer implements RenderInterface {
 	/**
 	 * creates a dom document xml version of the object
 	 *
-	 * @param Response $response
+	 * @param ResponseContent $response
 	 * @return DOMDocument
 	 */
-	public function to_domdocument(Response $response) {
+	public function to_domdocument(ResponseContent $response) {
 
 		$doc = new DOMDocument();
 		$this->append_to($doc, 'response', $response);

@@ -1,7 +1,7 @@
 <?php
 namespace Kampernet\Magic\Base\Action;
 
-use Kampernet\Magic\Base\AbstractRequest;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * the command interface
@@ -13,10 +13,10 @@ interface CommandInterface {
 	/**
 	 * The command execute method
 	 *
-	 * @param \Kampernet\Magic\Base\AbstractRequest $request
+	 * @param Request $request
 	 * @return boolean
 	 */
-	public function execute(AbstractRequest &$request);
+	public function execute(Request &$request);
 
 	/**
 	 * The command undo method

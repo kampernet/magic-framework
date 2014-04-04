@@ -1,12 +1,14 @@
 {
     "name": "kampernet/magic-framework",
-
     "description": "The framework for the Magic",
-
     "authors": [{
         "name": "Cookie Delicious",
         "email": "kampernet@gmail.com"
     }],
+
+    "require": {
+        "symfony/http-foundation": "2.4.*"
+    },
 
     "autoload": {
         "psr-0": {

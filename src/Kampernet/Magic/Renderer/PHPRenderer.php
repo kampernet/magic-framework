@@ -1,10 +1,11 @@
 <?php
 namespace Kampernet\Magic\Renderer;
 
+use Kampernet\Magic\Base\Configuration;
 use Kampernet\Magic\Base\Renderer\RenderInterface;
-use Kampernet\Magic\Base\Response;
-use Kampernet\Magic\Base\Environment;
-use Kampernet\Magic\Base\Request;
+use Kampernet\Magic\Base\ResponseContent;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * use PHP templates.  $response is available to the templates
@@ -14,12 +15,14 @@ use Kampernet\Magic\Base\Request;
 class PHPRenderer implements RenderInterface {
 
 	/**
-	 * (non-PHPdoc)
+	 * send appropriate headers
 	 *
-	 * @see RenderInterface::sendHeaders()
+	 * @param Response $response
+	 * @return void
 	 */
 	public function sendHeaders(Response $response) {
 
+		$response->sendHeaders();
 	}
 
 	/**
@@ -27,14 +30,14 @@ class PHPRenderer implements RenderInterface {
 	 *
 	 * @see RenderInterface::render()
 	 */
-	public function render(Response $response) {
+	public function render(Request $request, Response $response, ResponseContent $content) {
 
-		$templates = Environment::getInstance()->templates;
-		$path = realpath(dirname(__FILE__) . "/$templates");
-		$template = Request::getInstance()->path[0];
+		$path = Configuration::getInstance()->templates;
+		$template = $request->getBasePath();
 
-		return $this->getIncludeContents("$path/$template.phtml", $response);
+		$response->setContent($this->getIncludeContents("$path/$template.phtml", $content));
 
+		return $response;
 	}
 
 	/**
@@ -42,10 +45,10 @@ class PHPRenderer implements RenderInterface {
 	 * referenced inside the included php template
 	 *
 	 * @param string $filename
-	 * @param Response $response
+	 * @param ResponseContent $response
 	 * @return bool|string
 	 */
-	private function getIncludeContents($filename, Response $response) {
+	private function getIncludeContents($filename, ResponseContent $response) {
 
 		if (is_file($filename)) {
 			ob_start();
@@ -56,4 +59,5 @@ class PHPRenderer implements RenderInterface {
 
 		return false;
 	}
+
 }

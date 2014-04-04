@@ -1,10 +1,12 @@
 <?php
 namespace Kampernet\Magic\Base;
 
+use Kampernet\Magic\Base\Event\Event;
 use Kampernet\Magic\Base\Exception\NoSuchClassException;
 use ReflectionClass, stdClass;
 use Kampernet\Magic\Base\Util\AnnotationsParser;
 use Kampernet\Magic\Base\Aspect\Aspect;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * The Delegator is the IoC container.
@@ -24,14 +26,22 @@ class Delegator {
 	 * to the right class method with parameters.
 	 * returns the result of the method call
 	 *
-	 * @param AbstractRequest $request
+	 * @param Request $request
 	 * @return mixed
 	 */
-	public function delegate(AbstractRequest $request) {
+	public function delegate(Request $request) {
 
-		$args = (isset($request->params)) ? $request->params : array();
-		$method = array_pop($request->path);
-		$thing = implode('', $request->path);
+		$args = $request->request->all();
+
+		$uriParts = explode('?', $request->getRequestUri());
+
+		$path = $uriParts[0];
+		$path = trim($path, '/');
+
+		($path) ? $pathParts = explode('/', urldecode($path)) : $pathParts = array();
+
+		$method = array_pop($pathParts);
+		$thing = implode('', $pathParts);
 
 		// convert classname
 		$classname_parts = explode('-', $thing);

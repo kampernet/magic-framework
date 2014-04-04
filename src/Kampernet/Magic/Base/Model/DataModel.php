@@ -183,7 +183,7 @@ abstract class DataModel {
 	/**
 	 * methods available to be overridden / used as hooks
 	 */
-	public function init() {
+	public function init($properties = []) {
 	}
 
 	public function onBeforeSave() {

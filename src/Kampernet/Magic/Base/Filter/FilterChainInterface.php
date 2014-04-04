@@ -1,7 +1,7 @@
 <?php
 namespace Kampernet\Magic\Base\Filter;
 
-use Kampernet\Magic\Base\AbstractRequest;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * The Filter Chain Interface
@@ -12,10 +12,10 @@ use Kampernet\Magic\Base\AbstractRequest;
 interface FilterChainInterface {
 
 	/**
-	 * @param AbstractRequest $request
+	 * @param Request $request
 	 * @param FilterChainInterface $filter
 	 */
-	public function __construct(AbstractRequest &$request, FilterChainInterface $filter = null);
+	public function __construct(Request &$request, FilterChainInterface $filter = null);
 
 	/**
 	 * do whatever processing you need

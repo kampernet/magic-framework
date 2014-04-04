@@ -1,7 +1,7 @@
 <?php
 namespace Kampernet\Magic\Base\Filter;
 
-use Kampernet\Magic\Base\AbstractRequest;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * The base filter class for the decorator filters
@@ -12,7 +12,7 @@ abstract class BaseFilter implements FilterChainInterface {
 
 	/**
 	 * 
-	 * @var AbstractRequest
+	 * @var Request
 	 */
 	public $request;
 
@@ -20,11 +20,11 @@ abstract class BaseFilter implements FilterChainInterface {
 	 * the constructor can take another filter in it's constructor
 	 * thereby chaining the constructors to run their applyFilters
 	 *
-	 * @param AbstractRequest $request
+	 * @param Request $request
 	 * @param FilterChainInterface $filter
 	 * @return BaseFilter
 	 */
-	public function __construct(AbstractRequest &$request, FilterChainInterface $filter = null) {
+	public function __construct(Request &$request, FilterChainInterface $filter = null) {
 		$this->request = $request;
 		$this->applyFilter();
 	}

@@ -1,7 +1,6 @@
 <?php
 namespace Kampernet\Magic\Base\Model;
 
-use Kampernet\Magic\Base\AbstractRequest;
 use Kampernet\Magic\Base\Exception\NoSuchMethodException;
 
 /**
@@ -10,11 +9,6 @@ use Kampernet\Magic\Base\Exception\NoSuchMethodException;
  * @package lib/base
  */
 abstract class Model extends DataModel {
-
-	/**
-	 * @var AbstractRequest
-	 */
-	private $request;
 
 	private $originalClassName;
 
@@ -54,26 +48,9 @@ abstract class Model extends DataModel {
 	 *
 	 * @see DataModel::init()
 	 */
-	public function init() {
+	public function init($properties = []) {
 
-		$this->populate($this->request->params);
-	}
-
-	/**
-	 * @param AbstractRequest $request
-	 * @return void
-	 */
-	public function setRequest(AbstractRequest $request) {
-
-		$this->request = $request;
-	}
-
-	/**
-	 * @return AbstractRequest
-	 */
-	public function getRequest() {
-
-		return $this->request;
+		$this->populate($properties);
 	}
 
 	/**

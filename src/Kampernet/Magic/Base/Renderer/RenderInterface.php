@@ -1,7 +1,9 @@
 <?php
 namespace Kampernet\Magic\Base\Renderer;
 
-use Kampernet\Magic\Base\Response;
+use Kampernet\Magic\Base\ResponseContent;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * the interface for renderers
@@ -13,10 +15,12 @@ interface RenderInterface {
 	/**
 	 * render the response
 	 *
+	 * @param Request $request
 	 * @param Response $response
-	 * @return string
+	 * @param ResponseContent $content
+	 * @return Response $response
 	 */
-	public function render(Response $response);
+	public function render(Request $request, Response $response, ResponseContent $content);
 
 	/**
 	 * send appropriate headers

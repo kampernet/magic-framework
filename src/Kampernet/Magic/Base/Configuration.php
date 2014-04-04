@@ -45,13 +45,16 @@ class Configuration {
 
 	/**
 	 * wraps the configuration.xml as a simplexml element
+	 * note, the root path only need be set the first time
+	 * you use it. ( ie: your front controller )
 	 *
+	 * @param string $path
 	 * @return SimpleXMLElement
 	 */
-	public static function getInstance() {
+	public static function getInstance($path = "") {
 
 		if (!self::$_instance) {
-			self::$_instance = simplexml_load_file(realpath(__DIR__ . "/../") . "/app/configuration.xml");
+			self::$_instance = simplexml_load_file($path . "/configuration.xml");
 		}
 
 		return self::$_instance;

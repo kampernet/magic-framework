@@ -2,7 +2,10 @@
 namespace Kampernet\Magic\Renderer;
 
 use Kampernet\Magic\Base\Renderer\RenderInterface;
-use Kampernet\Magic\Base\Response;
+use Kampernet\Magic\Base\ResponseContent;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 /**
  * echo the response as JSON
@@ -18,9 +21,13 @@ class JSONRenderer implements RenderInterface {
 	 */
 	public function sendHeaders(Response $response) {
 
-		header("Content-Type: application/json");
-		header("Cache-Control: no-cache, must-revalidate");
-		header("Expires: Sat, 26 Jul 1997 05:00:00 GMT");
+		$response->headers = new ResponseHeaderBag([
+			"Content-Type" => "application/json",
+			"Cache-Control" => "no-cache, must-revalidate",
+			"Expires" => "Sat, 26 Jul 1997 05:00:00 GMT"
+		]);
+
+		$response->sendHeaders();
 	}
 
 	/**
@@ -28,8 +35,10 @@ class JSONRenderer implements RenderInterface {
 	 *
 	 * @see RenderInterface::render()
 	 */
-	public function render(Response $response) {
+	public function render(Request $request, Response $response, ResponseContent $content) {
 
-		return json_encode($response);
+		$response->setContent(json_encode($content));
+
+		return $response;
 	}
 }
