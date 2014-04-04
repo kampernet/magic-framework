@@ -34,16 +34,6 @@ class Configuration {
 	}
 
 	/**
-	 * magic get impl
-	 *
-	 * @param string $name
-	 */
-	public function __get($name) {
-
-		return $this->$name;
-	}
-
-	/**
 	 * wraps the configuration.xml as a simplexml element
 	 * note, the root path only need be set the first time
 	 * you use it. ( ie: your front controller )

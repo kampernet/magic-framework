@@ -32,8 +32,11 @@ class PHPRenderer implements RenderInterface {
 	 */
 	public function render(Request $request, Response $response, ResponseContent $content) {
 
-		$path = Configuration::getInstance()->templates;
+		$path = (string) Configuration::getInstance()->templates->path;
 		$template = $request->getBasePath();
+		if (!$template) {
+			$template = "index";
+		}
 
 		$response->setContent($this->getIncludeContents("$path/$template.phtml", $content));
 
@@ -46,6 +49,7 @@ class PHPRenderer implements RenderInterface {
 	 *
 	 * @param string $filename
 	 * @param ResponseContent $response
+	 * @throws \Exception
 	 * @return bool|string
 	 */
 	private function getIncludeContents($filename, ResponseContent $response) {
@@ -54,10 +58,12 @@ class PHPRenderer implements RenderInterface {
 			ob_start();
 			include $filename;
 
-			return ob_get_clean();
+			$content = ob_get_clean();
+		} else {
+			throw new \Exception('Could not find the template ' . $filename);
 		}
 
-		return false;
+		return $content;
 	}
 
 }
