@@ -26,7 +26,7 @@ class EventListenerRegister {
 			$ls = Application::getInstance()->listeners;
 			if ($ls->listener) {
 				foreach ($ls->listener as $l) {
-					$listeners[(string) $l->attributes()->listenFor] = (string) $l->attributes()->listenerMethod;
+					$listeners[(string) $l->attributes()->listenFor] = (string) $l->attributes()->listener;
 				}
 			}
 		}
@@ -36,11 +36,15 @@ class EventListenerRegister {
 				Event::bind($event, $listener);
 			} else {
 				$split = explode("::", $event);
-				$split = $split[0];
-				$lclass = $split . "Listener";
-				$x = ($d->$split instanceof Aspect) ? $d->$split->getObject() : $d->$split;
+				$model = $split[0];
+
+				$split2 = explode("::", $listener);
+				$lclass = $split2[0];
+				$lmethod = $split2[1];
+
+				$x = ($d->$model instanceof Aspect) ? $d->$model->getObject() : $d->$model;
 				$l = new $lclass($x);
-				Event::bind($event, $listener, $l);
+				Event::bind($event, $lmethod, $l);
 			}
 		}
 	}

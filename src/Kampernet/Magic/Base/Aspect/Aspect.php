@@ -223,8 +223,9 @@ class Aspect {
 		}
 
 		// replace $className with md5(rand())_$className
-		$this->compiledClassName = $this->className . "_" . md5(rand());
-		$this->compiledClassCode = str_replace($this->className, $this->compiledClassName, implode("", $this->classCodeArray));
+		$shortName = $class->getShortName();
+		$this->compiledClassName = $shortName . "_" . md5(rand());
+		$this->compiledClassCode = str_replace($shortName, $this->compiledClassName, implode("", $this->classCodeArray));
 
 		return $this;
 	}

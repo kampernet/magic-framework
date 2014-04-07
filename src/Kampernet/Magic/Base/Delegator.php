@@ -3,7 +3,7 @@ namespace Kampernet\Magic\Base;
 
 use Kampernet\Magic\Base\Event\Event;
 use Kampernet\Magic\Base\Exception\NoSuchClassException;
-use ReflectionClass, stdClass;
+use ReflectionClass, stdClass, SimpleXMLElement;
 use Kampernet\Magic\Base\Util\AnnotationsParser;
 use Kampernet\Magic\Base\Aspect\Aspect;
 use Symfony\Component\HttpFoundation\Request;
@@ -39,6 +39,9 @@ class Delegator {
 		$path = trim($path, '/');
 
 		($path) ? $pathParts = explode('/', urldecode($path)) : $pathParts = array();
+
+		// access routing overrides from application.xml
+		$pathParts = $this->implementRoutingOverrides($pathParts);
 
 		$method = array_pop($pathParts);
 		$thing = implode('', $pathParts);
@@ -142,4 +145,32 @@ class Delegator {
 			->compile();
 	}
 
+	/**
+	 * @param $path
+	 * @return array
+	 */
+	private function implementRoutingOverrides($path) {
+		/**
+		 * @var SimpleXmlElement[] $route
+		 */
+		$uri = "/".implode("/", $path);
+		$route = Application::getInstance()->actions->xpath("action[@uri='$uri']");
+
+		if (isset($route[0])) {
+			$path[0] = (string) $route[0]->attributes()->class;
+			$path[1] = (string) $route[0]->attributes()->method;
+		} else {
+			if (empty($path)) {
+				$path = [
+					"index", "__default"
+				];
+			} else {
+				if (!isset($path[1])) {
+					$path[1] = "__default";
+				}
+			}
+		}
+
+		return $path;
+	}
 }
