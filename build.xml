@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project default="test" name="dealsix">
+<project default="docs" name="magic-framework">
 
     <target name="docs">
         <delete dir="docs" failonerror="true" quiet="true"/>
@@ -10,4 +10,5 @@
             <arg value="docs" />
         </exec>
     </target>
+
 </project>
